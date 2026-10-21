@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172554">
+  <title>My Life OS</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #172554;
+    }
+
+    header {
+      background: #172554;
+      color: white;
+      padding: 24px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+    }
+
+    h1 { margin-top: 0; }
+    h2 { font-size: 19px; }
+
+    .card {
+      background: white;
+      padding: 18px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px #00000008;
+    }
+
+    .task {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .task:last-child { border-bottom: none; }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    #newTask {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 12px 16px;
+      background: #0f766e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #taskList { padding: 0; }
+
+    .muted { color: #64748b; }
+  </style>
+</head>
+<body>
+  <header>
+    <p>MY PERSONAL DASHBOARD</p>
+    <h1>My Life OS 👋</h1>
+    <p>Small steps. Better days.</p>
+    <p id="today"></p>
+  </header>
+
+  <section class="card">
+    <h2>🎯 Today's Progress</h2>
+    <p id="progress">0 tasks completed</p>
+  </section>
+
+  <section class="card">
+    <h2>✅ My Daily Tasks</h2>
+    <div id="taskList"></div>
+    <input id="newTask" placeholder="Add a new task..." />
+    <button id="addButton">+ Add Task</button>
+  </section>
+
+  <section class="card">
+    <h2>🌱 Daily Reminder</h2>
+    <p>Focus on the next small step. You don't have to do everything at once.</p>
+  </section>
+
+  <script>
+    const date = new Date();
+    document.getElementById("today").textContent =
+      date.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+
+    let tasks = [
+      { text: "Plan my day", done: false },
+      { text: "Complete a study session", done: false },
+      { text: "Review my progress", done: false }
+    ];
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      tasks.forEach((task, index) => {
+        const row = document.createElement("div");
+        row.className = "task";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.done;
+        checkbox.addEventListener("change", () => {
+          tasks[index].done = checkbox.checked;
+          renderTasks();
+        });
+
+        const label = document.createElement("span");
+        label.textContent = task.text;
+        label.style.flex = "1";
+        if (task.done) label.style.textDecoration = "line-through";
+
+        row.append(checkbox, label);
+        list.appendChild(row);
+      });
+
+      const completed = tasks.filter(task => task.done).length;
+      document.getElementById("progress").textContent =
+        `${completed} of ${tasks.length} tasks completed`;
+    }
+
+    document.getElementById("addButton").addEventListener("click", () => {
+      const input = document.getElementById("newTask");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      tasks.push({ text, done: false });
+      input.value = "";
+      renderTasks();
+    });
+
+    renderTasks();
+  </script>
+</body>
+</html>
